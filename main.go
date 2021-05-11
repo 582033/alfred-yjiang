@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 )
 
 const (
@@ -23,12 +24,24 @@ func JsonToMap(jsonStr string) (map[string]interface{}, error) {
 	return m, nil
 }
 
+func checkIp(ipString string) bool {
+	regex := `\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}`
+	match, _ := regexp.MatchString(regex, ipString)
+	return match
+}
+
 func main() {
-	if len(os.Args) <= 2 {
+	if len(os.Args) <= 1 {
 		fmt.Println("缺少参数IP地址")
 		os.Exit(1)
 	}
+
 	ip := os.Args[1]
+	if checkIp(ip) == false {
+		fmt.Println("ip地址格式有误")
+		os.Exit(1)
+	}
+
 	url := ipUrl + ip
 	//fmt.Println(url)
 	resp, err := http.Get(url)
