@@ -23,22 +23,19 @@ type regexRow struct {
 }
 
 func inputApater(inputString string) string {
-	output := "未识别的参数"
+	var output string
 
-	regexSlice := []regexRow{
-		{regex: `^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$`, action: libs.ActionIp(inputString)},
-		{regex: `^\d{10,}$`, action: libs.ActionInttotime(inputString)},
-		{regex: `^\d{4}-\d{1,2}-\d{1,2}$`, action: libs.ActionTimetoint(inputString)},
-		{regex: `^now$`, action: libs.ActionGetNow(inputString)},
-	}
-
-	for _, regexObj := range regexSlice {
-		//fmt.Println(ipObj.regex)
-		match, _ := regexp.MatchString(regexObj.regex, inputString)
-		//fmt.Println(match)
-		if match {
-			output = regexObj.action
-		}
+	switch {
+	case regexp.MustCompile(`^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$`).MatchString(inputString):
+		output = libs.ActionIp(inputString)
+	case regexp.MustCompile(`^\d{10,}$`).MatchString(inputString):
+		output = libs.ActionInttotime(inputString)
+	case regexp.MustCompile(`^\d{4}-\d{1,2}-\d{1,2}$`).MatchString(inputString):
+		output = libs.ActionTimetoint(inputString)
+	case regexp.MustCompile(`^now$`).MatchString(inputString):
+		output = libs.ActionGetNow(inputString)
+	default:
+		output = "查询中..."
 	}
 	return output
 }
