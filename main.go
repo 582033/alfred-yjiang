@@ -1,7 +1,9 @@
 package main
 
 import (
+	"alfred-yjiang/common"
 	"alfred-yjiang/libs"
+	"fmt"
 	"regexp"
 
 	aw "github.com/deanishe/awgo"
@@ -23,33 +25,53 @@ type regexRow struct {
 }
 
 func inputApater(inputString string) string {
-	var output string
+	output := "查询中..."
 
 	switch {
-	case regexp.MustCompile(`^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$`).MatchString(inputString):
+	case regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`).MatchString(inputString):
 		output = libs.ActionIp(inputString)
 	case regexp.MustCompile(`^\d{10,}$`).MatchString(inputString):
 		output = libs.ActionInttotime(inputString)
-	case regexp.MustCompile(`^\d{4}-\d{1,2}-\d{1,2}$`).MatchString(inputString):
+	case regexp.MustCompile(`^\d{4}\-\d{1,2}\-\d{1,2}.*$`).MatchString(inputString):
 		output = libs.ActionTimetoint(inputString)
 	case regexp.MustCompile(`^now$`).MatchString(inputString):
 		output = libs.ActionGetNow(inputString)
 	default:
-		output = "查询中..."
+		output = "未识别的参数"
 	}
 	return output
 }
 
 func run() {
 	args := wf.Args()
+	input := ""
 	output := ""
+
 	if len(args) <= 0 {
 		output = "请输入参数"
 	} else {
-		input := args[0]
+		input = common.Implode(args, " ")
 		output = inputApater(input)
 	}
-	wf.NewItem(output)
+
+	item := wf.NewItem(output)
+	fmt.Println(args)
+
+	//设置icon、副标题等标识
+	icon := &aw.Icon{
+		Value: "./icon.png",
+	}
+	uid := "com.alfred.yjiang"
+	item.Subtitle(input).Icon(icon).UID(uid).Valid(true)
+
+	//设置Commnad键copy作用
+	copyInput := fmt.Sprintf("复制结果:%s", input)
+	item.Cmd().Subtitle(copyInput).Arg("copy").Valid(true)
+
+	//设置Commnad键ctrl作用
+	searchInput := fmt.Sprintf("搜索结果:%s", input)
+	item.Ctrl().Subtitle(searchInput).Arg("search").Valid(true)
+
 	wf.SendFeedback()
 }
 
