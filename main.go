@@ -55,11 +55,10 @@ func run() {
 	}
 
 	item := wf.NewItem(output)
-	fmt.Println(args)
 
 	//设置icon、副标题等标识
 	icon := &aw.Icon{
-		Value: "./icon.png",
+		Value: "icon.png",
 	}
 	uid := "com.alfred.yjiang"
 	item.Subtitle(input).Icon(icon).UID(uid).Valid(true)
@@ -68,7 +67,7 @@ func run() {
 	copyInput := fmt.Sprintf("复制结果:%s", output)
 	item.Cmd().Subtitle(copyInput).Arg("copy").Valid(true)
 
-	//设置Commnad键ctrl作用
+	//设置Ctrl键search作用
 	searchInput := fmt.Sprintf("搜索结果:%s", input)
 	item.Ctrl().Subtitle(searchInput).Arg("search").Valid(true)
 
