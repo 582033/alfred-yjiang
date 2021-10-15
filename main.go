@@ -65,7 +65,7 @@ func run() {
 	item.Subtitle(input).Icon(icon).UID(uid).Valid(true)
 
 	//设置Commnad键copy作用
-	copyInput := fmt.Sprintf("复制结果:%s", input)
+	copyInput := fmt.Sprintf("复制结果:%s", output)
 	item.Cmd().Subtitle(copyInput).Arg("copy").Valid(true)
 
 	//设置Commnad键ctrl作用
