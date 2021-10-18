@@ -54,22 +54,25 @@ func run() {
 		output = inputApater(input)
 	}
 
-	item := wf.NewItem(output)
+	//此处的Arg参数，会用于`copy to clipboard`中的 {query};不设置将导致写入粘贴板的为空
+	item := wf.NewItem(output).Arg(output)
 
 	//设置icon、副标题等标识
 	icon := &aw.Icon{
 		Value: "icon.png",
 	}
 	uid := "com.alfred.yjiang"
-	item.Subtitle(input).Icon(icon).UID(uid).Valid(true)
+	item.Subtitle("查询结果").Icon(icon).UID(uid).Valid(true)
 
 	//设置Commnad键copy作用
 	copyInput := fmt.Sprintf("复制结果:%s", output)
-	item.Cmd().Subtitle(copyInput).Arg("copy").Valid(true)
+	item.Cmd().Subtitle(copyInput).Arg(output).Valid(true)
 
-	//设置Ctrl键search作用
-	searchInput := fmt.Sprintf("搜索结果:%s", input)
-	item.Ctrl().Subtitle(searchInput).Arg("search").Valid(true)
+	/*
+		//设置Ctrl键search作用
+		searchInput := fmt.Sprintf("搜索结果:%s", input)
+		item.Ctrl().Subtitle(searchInput).Arg(output).Valid(true)
+	*/
 
 	wf.SendFeedback()
 }
